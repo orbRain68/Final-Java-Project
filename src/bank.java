@@ -14,6 +14,6 @@ import javax.swing.*;
 public class bank extends GUI{
     public static void main(String[] args) throws Exception {
         GUI objGui = new GUI();
-        objGui.login();
+        objGui.secondGui();//login();
     }
 }
