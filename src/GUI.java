@@ -15,7 +15,7 @@ import javax.swing.border.Border;
 /**
  * @author [Abdulrazaq 4020018]
  */
-public class GUI implements ActionListener {
+public class GUI extends bank implements ActionListener {
     private static JLabel userLabel,passwordLabel,messageLabel;
     private static JTextField userTextField;
     private static JPasswordField passwordField;
@@ -23,7 +23,7 @@ public class GUI implements ActionListener {
     private static JPanel panel;
     private static JButton button;
 
-    public void login() throws Exception {
+    public static void login() throws Exception {
         frame = createFrame();
 
         panel = new JPanel();
@@ -77,15 +77,15 @@ public class GUI implements ActionListener {
         }    
     }
 
-    public void secondGui() {
+    private void secondGui() {
         //frame.setVisible(false);
         JFrame frame1 = createFrame2();
         JPanel buttonPanel = new JPanel();
         JLayeredPane layeredPane = new JLayeredPane();
         JPanel homePanel = homPanel();
         JPanel withdrawPanel = withdrawPanel();
-        //JPanel depasitePanel = depasitePanel();
-        //JPanel detailPanel = detailPanel();
+        JPanel depositPanel = depositPanel();
+
 
         buttonPanel.setBounds(0, 0, 632, 70);
         buttonPanel.setBorder(BorderFactory.createTitledBorder("Services"));
@@ -99,8 +99,8 @@ public class GUI implements ActionListener {
             }
         });
         buttonPanel.add(homeButton);
-        JButton withdrawbButton = new JButton("Withdraw");
-        withdrawbButton.addActionListener(new GUI() {
+        JButton withdrawSwitchButton = new JButton("Withdraw");
+        withdrawSwitchButton.addActionListener(new GUI() {
             public void actionPerformed(ActionEvent e) {
                 layeredPane.removeAll();
                 layeredPane.add(withdrawPanel);
@@ -108,23 +108,13 @@ public class GUI implements ActionListener {
                 layeredPane.revalidate();
             }
         });
-        buttonPanel.add(withdrawbButton);
-        JButton depasiteButton = new JButton("Depasite");
-        buttonPanel.add(depasiteButton);
-        depasiteButton.addActionListener(new GUI() {
+        buttonPanel.add(withdrawSwitchButton);
+        JButton depositSwitchButton = new JButton("deposit");
+        buttonPanel.add(depositSwitchButton);
+        depositSwitchButton.addActionListener(new GUI() {
             public void actionPerformed(ActionEvent e) {
                 layeredPane.removeAll();
-                //layeredPane.add(Panal);
-                layeredPane.repaint();
-                layeredPane.revalidate();
-            }
-        });
-        JButton detailButton = new JButton("Detail");
-        buttonPanel.add(detailButton);
-        detailButton.addActionListener(new GUI() {
-            public void actionPerformed(ActionEvent e) {
-                layeredPane.removeAll();
-                //layeredPane.add(Panal);
+                layeredPane.add(depositPanel);
                 layeredPane.repaint();
                 layeredPane.revalidate();
             }
@@ -164,7 +154,7 @@ public class GUI implements ActionListener {
         withdrawAmount.setBounds(100, 45, 300, 25);
         withdrawPanel.add(withdrawAmount);
 
-        JLabel messagewithdrawLabel = new JLabel("HHHHHHHHHHHHHH");
+        JLabel messagewithdrawLabel = new JLabel("");
         messagewithdrawLabel.setBounds(100, 75, 300, 25);
         withdrawPanel.add(messagewithdrawLabel);
 
@@ -172,7 +162,7 @@ public class GUI implements ActionListener {
         withdrawButton.setBounds(50, 125, 130, 20);
         withdrawButton.addActionListener(new GUI() {
             public void actionPerformed(ActionEvent e) {
-                String successful = "Money is sent to your physical wallet :)";
+                String successful = "Money was sent to your physical wallet :)";
                 String fails = "Invalid input";
                 String input = withdrawAmount.getText();
                 if (isNumeric(input)) {
@@ -188,9 +178,50 @@ public class GUI implements ActionListener {
         });
         withdrawPanel.add(withdrawButton);
 
+        JLabel depositText = new JLabel("Enter an amount to deposit");
+        depositText.setBounds(155, 5, 185, 25);
+        depositText.setHorizontalAlignment(JLabel.CENTER);
+        depositPanel.add(depositText);
+
+        JTextField depositAmount = new JTextField();
+        depositAmount.setBounds(100, 45, 300, 25);
+        depositPanel.add(depositAmount);
+
+        JLabel messagedepositLabel = new JLabel("");
+        messagedepositLabel.setBounds(100, 75, 300, 25);
+        depositPanel.add(messagedepositLabel);
+
+        JButton depositButton = new JButton("deposit");
+        depositButton.setBounds(50, 125, 130, 20);
+        depositButton.addActionListener(new GUI() {
+            public void actionPerformed(ActionEvent e) {
+                String successful = "Money has been added to your balance";
+                String fails = "Invalid input";
+                String input = depositAmount.getText();
+                if (isNumeric(input)) {
+                    messagedepositLabel.setText(successful);
+                    depositAmount.setText("");
+                    // Add to balance function.
+                } else {
+                    messagedepositLabel.setText(fails);
+                    depositAmount.setText("");
+
+                }
+            }
+        });
+        depositPanel.add(depositButton);
+
         frame1.add(layeredPane);
         frame1.setVisible(true);
     }
+    private JPanel depositPanel() {
+        JPanel depositPanel = new JPanel();
+        depositPanel.setBounds(65, 45, 500, 200);
+        depositPanel.setLayout(null);
+        depositPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
+        return depositPanel;
+    }
+
     private JPanel withdrawPanel() {
         JPanel withdrawPanel = new JPanel();
         withdrawPanel.setBounds(65, 45, 500, 200);
@@ -226,4 +257,7 @@ public class GUI implements ActionListener {
     public static boolean isNumeric(String str) {
         return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
       }
+      public static void main(String[] args) throws Exception {
+        login();
+    }
 }
