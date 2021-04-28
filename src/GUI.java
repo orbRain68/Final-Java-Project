@@ -3,19 +3,16 @@
  * Java Project 2.
  * 28/04/2021
  */
+// Packages uesd.
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
+import java.text.DecimalFormat;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
 import javax.swing.*;
-import javax.swing.border.Border;
-
 /**
  * @author [Abdulrazaq 4020018]
  */
@@ -27,10 +24,11 @@ public class GUI extends bank implements ActionListener {
     private static JPanel panel;
     private static JButton button;
     private static bank obj = new bank();
-    public static String accountNumber;
+    private static DecimalFormat df = new DecimalFormat("###.##");
 
 
-    public static void login() throws Exception {
+
+    public static void login() throws Exception { // first screen 
         frame = createFrame();
 
         panel = new JPanel();
@@ -57,44 +55,40 @@ public class GUI extends bank implements ActionListener {
         button.setBounds(50, 90, 80, 25);
         button.addActionListener(new GUI() {
                 
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
+    public void actionPerformed(ActionEvent e) { // This button will check the username and password for the Dictionary or the HashTable.
         // From the file user.txt
 
         String user = userTextField.getText();
         String password = passwordField.getText();
-        try {
-            Enumeration<String> keys = obj.IHaveNoIdea().keys();
+        try { 
+            Hashtable<String, String[]> Table = obj.IHaveNoIdea();
+            Enumeration<String> keys = Table.keys(); // Calling the HashTable function form the class bank.
             String [] accounts = new String[3];
             int i = 0;
             while (keys.hasMoreElements()) {
                 accounts[i] = keys.nextElement();
                 i++;
             }
-            if (user.equals(obj.IHaveNoIdea().get(accounts[0])[0]) && password.equals(obj.IHaveNoIdea().get(accounts[0])[1])) {
-                //int acount = Integer.parseInt(accounts[0]);
+            if (user.equals(Table.get(accounts[0])[0]) && password.equals(Table.get(accounts[0])[1])) {
                 obj.setAccountNumber(accounts[0]) ;
-                GUI.accountNumber = obj.getAccountNumber();
-                System.out.println(accountNumber);
+                System.out.println(obj.getAccountNumber());
+                obj.setBalance(obj.balance()[1]);
                 secondGui();
-            } else if (user.equals(obj.IHaveNoIdea().get(accounts[1])[0]) && password.equals(obj.IHaveNoIdea().get(accounts[1])[1])) {
-                //int acount = Integer.parseInt(accounts[1]);
+            } else if (user.equals(Table.get(accounts[1])[0]) && password.equals(Table.get(accounts[1])[1])) {
                 obj.setAccountNumber(accounts[1]) ;
-                GUI.accountNumber = obj.getAccountNumber();
-                System.out.println(accountNumber);
+                obj.setBalance(obj.balance()[2]);
+                System.out.println(obj.getAccountNumber());
                 secondGui();
-            } else if (user.equals(obj.IHaveNoIdea().get(accounts[2])[0]) && password.equals(obj.IHaveNoIdea().get(accounts[2])[1])) {
-                //int acount = Integer.parseInt(accounts[2]);
+            } else if (user.equals(Table.get(accounts[2])[0]) && password.equals(Table.get(accounts[2])[1])) {
                 obj.setAccountNumber(accounts[2]);
-                GUI.accountNumber = obj.getAccountNumber();
-                System.out.println(accountNumber);
+                obj.setBalance(obj.balance()[0]);
+                System.out.println(obj.getAccountNumber());
                 secondGui();
             } else {
                 messageLabel.setText("Incorrect Password.");
-                System.out.println(accountNumber);
             }
         } catch (FileNotFoundException e1) {
-            // TODO Auto-generated catch block
+            
             System.out.println("check for missing file (BankUsers.txt)");
             e1.printStackTrace();
         }    
@@ -105,20 +99,13 @@ public class GUI extends bank implements ActionListener {
         messageLabel = new JLabel("");
         messageLabel.setBounds(150, 90, 150, 25);
         panel.add(messageLabel);
-        
-        
-        
+
         frame.setVisible(true);
-        
-        
     }
-
-
-
-    private static void secondGui() {
-        frame.setVisible(false);
+    private static void secondGui() throws FileNotFoundException {
+        frame.setVisible(false); // Close the first screen after logging in
         JFrame frame1 = createFrame2();
-        JPanel buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel(); // Create button panel at the top of the second screen.
         JLayeredPane layeredPane = new JLayeredPane();
         JPanel homePanel = homPanel();
         JPanel withdrawPanel = withdrawPanel();
@@ -126,9 +113,9 @@ public class GUI extends bank implements ActionListener {
 
 
         buttonPanel.setBounds(0, 0, 632, 70);
-        buttonPanel.setBorder(BorderFactory.createTitledBorder("Services"));
-        JButton homeButton = new JButton("Home");
-        homeButton.addActionListener(new GUI() {
+        buttonPanel.setBorder(BorderFactory.createTitledBorder("Services")); // Border
+        JButton homeButton = new JButton("Home"); // Button 1
+        homeButton.addActionListener(new GUI() { // switch between panel when prssed
             public void actionPerformed(ActionEvent e) {
                 layeredPane.removeAll();
                 layeredPane.add(homePanel);
@@ -137,8 +124,8 @@ public class GUI extends bank implements ActionListener {
             }
         });
         buttonPanel.add(homeButton);
-        JButton withdrawSwitchButton = new JButton("Withdraw");
-        withdrawSwitchButton.addActionListener(new GUI() {
+        JButton withdrawSwitchButton = new JButton("Withdraw"); // Button 2
+        withdrawSwitchButton.addActionListener(new GUI() { // switch between panel when prssed
             public void actionPerformed(ActionEvent e) {
                 layeredPane.removeAll();
                 layeredPane.add(withdrawPanel);
@@ -147,10 +134,10 @@ public class GUI extends bank implements ActionListener {
             }
         });
         buttonPanel.add(withdrawSwitchButton);
-        JButton depositSwitchButton = new JButton("deposit");
+        JButton depositSwitchButton = new JButton("deposit"); //Butten 3
         buttonPanel.add(depositSwitchButton);
         depositSwitchButton.addActionListener(new GUI() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) { // switch between panel when prssed
                 layeredPane.removeAll();
                 layeredPane.add(depositPanel);
                 layeredPane.repaint();
@@ -159,23 +146,23 @@ public class GUI extends bank implements ActionListener {
         });
         frame1.add(buttonPanel);
         
-        layeredPane.setBounds(2,70,630,290);
+        layeredPane.setBounds(2,70,630,290); // place.
         layeredPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
         layeredPane.setLayout(null);
         JLabel welcomeLabel = new JLabel("Welcome to our bank!");
-        JLabel acountLabel = new JLabel("Your acount number is: " + GUI.accountNumber);
-        JLabel balanceLabel = new JLabel("Your balance is: ");
+        JLabel acountLabel = new JLabel("Your acount number is: " + obj.getAccountNumber()); // In home panel show the account number and
+        JLabel balanceLabel = new JLabel("Your balance is: " + obj.getBalance()); //balance amount.
         
         layeredPane.add(homePanel);
         welcomeLabel.setOpaque(true);
         welcomeLabel.setBounds(155, 5, 185, 25);
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
         
-        // set a text for acount number (Integer To string)
+        // set a text for acount number (Integer To string) (Done)
         acountLabel.setBounds(100, 40, 300, 25);
         acountLabel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
 
-        // set a text for Balance (Double to String)
+        // set a text for Balance (Double to String) (Done)
         balanceLabel.setBounds(100, 75, 300, 25);
         balanceLabel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
 
@@ -199,14 +186,21 @@ public class GUI extends bank implements ActionListener {
         JButton withdrawButton = new JButton("Withdraw");
         withdrawButton.setBounds(50, 125, 130, 20);
         withdrawButton.addActionListener(new GUI() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) { // When the withdraw button is press this function will run.
                 String successful = "Money was sent to your physical wallet :)";
                 String fails = "Invalid input";
                 String input = withdrawAmount.getText();
-                if (isNumeric(input)) {
+                if (isNumeric(input)) { // Checks the input value.
                     messagewithdrawLabel.setText(successful);
                     withdrawAmount.setText("");
                     // Add to balance function.
+                    double wAmount = Double.parseDouble(input);
+                    try {
+                        obj.setBalance(obj.withdraw(wAmount));
+                        balanceLabel.setText("Your balance is: " + df.format(obj.getBalance()));
+                    } catch (FileNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
                 } else {
                     messagewithdrawLabel.setText(fails);
                     withdrawAmount.setText("");
@@ -231,15 +225,22 @@ public class GUI extends bank implements ActionListener {
 
         JButton depositButton = new JButton("deposit");
         depositButton.setBounds(50, 125, 130, 20);
-        depositButton.addActionListener(new GUI() {
+        depositButton.addActionListener(new GUI() { // when the deposit button is press this function will run.
             public void actionPerformed(ActionEvent e) {
                 String successful = "Money has been added to your balance";
                 String fails = "Invalid input";
                 String input = depositAmount.getText();
-                if (isNumeric(input)) {
+                if (isNumeric(input)) { // checks the input values.
                     messagedepositLabel.setText(successful);
                     depositAmount.setText("");
                     // Add to balance function.
+                    double dAmount = Double.parseDouble(input);
+                    try {
+                        obj.setBalance(obj.deposit(dAmount));
+                        balanceLabel.setText("Your balance is: " + df.format(obj.getBalance()));
+                    } catch (FileNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
                 } else {
                     messagedepositLabel.setText(fails);
                     depositAmount.setText("");
@@ -252,7 +253,7 @@ public class GUI extends bank implements ActionListener {
         frame1.add(layeredPane);
         frame1.setVisible(true);
     }
-    private static JPanel depositPanel() {
+    private static JPanel depositPanel() { // Process depasit Panel
         JPanel depositPanel = new JPanel();
         depositPanel.setBounds(65, 45, 500, 200);
         depositPanel.setLayout(null);
@@ -260,7 +261,7 @@ public class GUI extends bank implements ActionListener {
         return depositPanel;
     }
 
-    private static JPanel withdrawPanel() {
+    private static JPanel withdrawPanel() { // process withdraw panel
         JPanel withdrawPanel = new JPanel();
         withdrawPanel.setBounds(65, 45, 500, 200);
         withdrawPanel.setLayout(null);
@@ -268,7 +269,7 @@ public class GUI extends bank implements ActionListener {
         return withdrawPanel;
     }
 
-    private static JFrame createFrame2() {
+    private static JFrame createFrame2() { // bank frame (second frame)
         JFrame frame = new JFrame("Account");
         frame.setSize(new Dimension(650,400));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -277,7 +278,7 @@ public class GUI extends bank implements ActionListener {
         frame.setLocationRelativeTo(null);
         return frame;
     }
-    private static JFrame createFrame() {
+    private static JFrame createFrame() { // Login frame
         JFrame frame = new JFrame("Login ...");
         frame.setSize(new Dimension(350, 180));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -296,14 +297,13 @@ public class GUI extends bank implements ActionListener {
         return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
       }
       public static void main(String[] args) throws Exception {
-        login();
+        login();  // Start the entire code via main function.
     }
 
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
         
     }
 }

@@ -3,30 +3,24 @@
  * Java Project 2.
  * 28/04/2021
  */
+// Packages uesd.
 import java.util.Hashtable;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Dictionary;
-
 /**
  * @author [Abdulrazaq 4020018]
  */
 public class bank {
-    private String name; // Use the name to get acount number and balance from file called bankUsers.txt and set username and password()
-    private String acountNumber ;
-    private double[] balance;
-    private String [][]username = {{"razaq","CarLover202"},{"miky","catdude9"},{"A","A"}}; //store in an array.
-    //private String []Password; // store in an array
-    private Hashtable<String, String[]> my_dict;
+    private String acountNumber ; // Use the accountnumber form the text file (BankUsers.txt) and set username and password.
+    private double balance;
+    private String [][]usernamePassword = {{"Hamood","CarLover202"},{"miky","catdude9"},{"A","A"}}; //store in an array.
+    private Hashtable<String, String[]> my_dict; // Dictionary
 
-    
     public Hashtable<String,String[]> IHaveNoIdea() throws FileNotFoundException {
         File file = new File("src/BankUsers.txt");
         Scanner userScanner = new Scanner(file);
-        String[][] value = this.username;
+        String[][] value = this.usernamePassword;
         my_dict = new Hashtable<String, String[]>();
         int i = 0;
         while (userScanner.hasNextLine()) {
@@ -34,29 +28,53 @@ public class bank {
             int indxNum = reader.indexOf("number");
             int indx = reader.indexOf(".",indxNum);
             String key = reader.substring(indxNum+8,indx);
-            String[] values = value[i];
+            String[] values = value[i]; // Storing each Username and password in an array
             
-            my_dict.put(key, values);
+            my_dict.put(key, values); // With this line I can call the account number and get the username and password.
             i++;
         }
         userScanner.close();
         return my_dict;
     }
-    public void balance() {
-        
+    public double[] balance() throws FileNotFoundException { // call each balance amount form each user and add it to an array.
+        File sourceFile = new File("src/BankUsers.txt");
+        Scanner scan = new Scanner(sourceFile);
+        double[] balance = new double[3];
+        int i = 0;
+        while (scan.hasNextLine()) {
+            String reader = scan.nextLine();
+            int indxNum = reader.lastIndexOf("$");
+            double Money = Double.parseDouble(reader.substring(indxNum+1));
+            balance[i] = Money;
+            //System.out.println(Money);
+            i++;
+        }
+        scan.close();
+        return balance;
     }
-    /*
-    private boolean checkUsernameAndPassword(String userName,String password) {
-        return true;
+    public double deposit(double amount) { // deposit the entered amount.
+        return this.balance = this.balance + amount;
     }
-    */
-    public String getAccountNumber() { //Getter
+    public double withdraw(double amount) { // Withdraw the entered amount.
+        if (amount > this.balance) {
+            System.out.println("You don't have that much ...");
+            return this.balance;
+        } else {
+            return this.balance = this.balance - amount;
+        }
+    }
+    public String getAccountNumber() { //Getter for account number
         return this.acountNumber;
     }
     
-    public void setAccountNumber(String accounts) { //Setter
+    public void setAccountNumber(String accounts) { //Setter for account number
         // get the information from the file ()
         this.acountNumber = accounts;
     }
-
+    public void setBalance(double b) { // Setter for diffrent values. 
+        this.balance = b;
+    }
+    public double getBalance() throws FileNotFoundException { // Getter for current values.
+        return this.balance;
+    }
 }
