@@ -8,7 +8,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -22,6 +26,9 @@ public class GUI extends bank implements ActionListener {
     private static JFrame frame;
     private static JPanel panel;
     private static JButton button;
+    private static bank obj = new bank();
+    public static String accountNumber;
+
 
     public static void login() throws Exception {
         frame = createFrame();
@@ -48,7 +55,51 @@ public class GUI extends bank implements ActionListener {
 
         button = new JButton("Login");
         button.setBounds(50, 90, 80, 25);
-        button.addActionListener(new GUI());
+        button.addActionListener(new GUI() {
+                
+    public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+        // From the file user.txt
+
+        String user = userTextField.getText();
+        String password = passwordField.getText();
+        try {
+            Enumeration<String> keys = obj.IHaveNoIdea().keys();
+            String [] accounts = new String[3];
+            int i = 0;
+            while (keys.hasMoreElements()) {
+                accounts[i] = keys.nextElement();
+                i++;
+            }
+            if (user.equals(obj.IHaveNoIdea().get(accounts[0])[0]) && password.equals(obj.IHaveNoIdea().get(accounts[0])[1])) {
+                //int acount = Integer.parseInt(accounts[0]);
+                obj.setAccountNumber(accounts[0]) ;
+                GUI.accountNumber = obj.getAccountNumber();
+                System.out.println(accountNumber);
+                secondGui();
+            } else if (user.equals(obj.IHaveNoIdea().get(accounts[1])[0]) && password.equals(obj.IHaveNoIdea().get(accounts[1])[1])) {
+                //int acount = Integer.parseInt(accounts[1]);
+                obj.setAccountNumber(accounts[1]) ;
+                GUI.accountNumber = obj.getAccountNumber();
+                System.out.println(accountNumber);
+                secondGui();
+            } else if (user.equals(obj.IHaveNoIdea().get(accounts[2])[0]) && password.equals(obj.IHaveNoIdea().get(accounts[2])[1])) {
+                //int acount = Integer.parseInt(accounts[2]);
+                obj.setAccountNumber(accounts[2]);
+                GUI.accountNumber = obj.getAccountNumber();
+                System.out.println(accountNumber);
+                secondGui();
+            } else {
+                messageLabel.setText("Incorrect Password.");
+                System.out.println(accountNumber);
+            }
+        } catch (FileNotFoundException e1) {
+            // TODO Auto-generated catch block
+            System.out.println("check for missing file (BankUsers.txt)");
+            e1.printStackTrace();
+        }    
+    }
+        });
         panel.add(button);
 
         messageLabel = new JLabel("");
@@ -62,23 +113,10 @@ public class GUI extends bank implements ActionListener {
         
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        // From the file user.txt
 
-        String user = userTextField.getText();
-        String password = passwordField.getText();
-        if (user.equals("a") && password.equals("a")) {
-            secondGui();
-            
-        } else {
-            messageLabel.setText("Incorrect Password.");
-        }    
-    }
 
-    private void secondGui() {
-        //frame.setVisible(false);
+    private static void secondGui() {
+        frame.setVisible(false);
         JFrame frame1 = createFrame2();
         JPanel buttonPanel = new JPanel();
         JLayeredPane layeredPane = new JLayeredPane();
@@ -125,7 +163,7 @@ public class GUI extends bank implements ActionListener {
         layeredPane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
         layeredPane.setLayout(null);
         JLabel welcomeLabel = new JLabel("Welcome to our bank!");
-        JLabel acountLabel = new JLabel("Your acount number is: ");
+        JLabel acountLabel = new JLabel("Your acount number is: " + GUI.accountNumber);
         JLabel balanceLabel = new JLabel("Your balance is: ");
         
         layeredPane.add(homePanel);
@@ -214,7 +252,7 @@ public class GUI extends bank implements ActionListener {
         frame1.add(layeredPane);
         frame1.setVisible(true);
     }
-    private JPanel depositPanel() {
+    private static JPanel depositPanel() {
         JPanel depositPanel = new JPanel();
         depositPanel.setBounds(65, 45, 500, 200);
         depositPanel.setLayout(null);
@@ -222,7 +260,7 @@ public class GUI extends bank implements ActionListener {
         return depositPanel;
     }
 
-    private JPanel withdrawPanel() {
+    private static JPanel withdrawPanel() {
         JPanel withdrawPanel = new JPanel();
         withdrawPanel.setBounds(65, 45, 500, 200);
         withdrawPanel.setLayout(null);
@@ -259,5 +297,13 @@ public class GUI extends bank implements ActionListener {
       }
       public static void main(String[] args) throws Exception {
         login();
+    }
+
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+        
     }
 }
