@@ -151,7 +151,7 @@ public class GUI extends bank implements ActionListener {
         layeredPane.setLayout(null);
         JLabel welcomeLabel = new JLabel("Welcome to our bank!");
         JLabel acountLabel = new JLabel("Your acount number is: " + obj.getAccountNumber()); // In home panel show the account number and
-        JLabel balanceLabel = new JLabel("Your balance is: " + obj.getBalance()); //balance amount.
+        JLabel balanceLabel = new JLabel("Your balance is: $" + obj.getBalance()); //balance amount.
         
         layeredPane.add(homePanel);
         welcomeLabel.setOpaque(true);
@@ -160,11 +160,11 @@ public class GUI extends bank implements ActionListener {
         
         // set a text for acount number (Integer To string) (Done)
         acountLabel.setBounds(100, 40, 300, 25);
-        acountLabel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
+        acountLabel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
 
         // set a text for Balance (Double to String) (Done)
-        balanceLabel.setBounds(100, 75, 300, 25);
-        balanceLabel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
+        balanceLabel.setBounds(100, 90, 300, 25);
+        balanceLabel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
 
         homePanel.add(welcomeLabel);
         homePanel.add(acountLabel);
@@ -181,31 +181,42 @@ public class GUI extends bank implements ActionListener {
 
         JLabel messagewithdrawLabel = new JLabel("");
         messagewithdrawLabel.setBounds(100, 75, 300, 25);
+        messagewithdrawLabel.setHorizontalAlignment(JLabel.CENTER);
         withdrawPanel.add(messagewithdrawLabel);
 
         JButton withdrawButton = new JButton("Withdraw");
         withdrawButton.setBounds(50, 125, 130, 20);
         withdrawButton.addActionListener(new GUI() {
             public void actionPerformed(ActionEvent e) { // When the withdraw button is press this function will run.
-                String successful = "Money was sent to your physical wallet :)";
+                String successful = "Please to the withdrew amount ";
                 String fails = "Invalid input";
+                String notEnough = "You don't have that much to withdraw ";
+                int maximumAmount = 5000;
+                String tooMuch = "maximum amount to withdraw is $" + df.format(maximumAmount);
                 String input = withdrawAmount.getText();
                 if (isNumeric(input)) { // Checks the input value.
-                    messagewithdrawLabel.setText(successful);
                     withdrawAmount.setText("");
                     // Add to balance function.
                     double wAmount = Double.parseDouble(input);
                     try {
-                        obj.setBalance(obj.withdraw(wAmount));
-                        balanceLabel.setText("Your balance is: " + df.format(obj.getBalance()));
+                        if (obj.getBalance() > wAmount) {
+                            if (maximumAmount >= wAmount) {
+                                messagewithdrawLabel.setText(successful);
+                                obj.setBalance(obj.withdraw(wAmount));
+                                balanceLabel.setText("Your balance is: $" + df.format(obj.getBalance()));
+                            } else {
+                                messagewithdrawLabel.setText(tooMuch);
+                            }        
+                        } else {
+                            messagewithdrawLabel.setText(notEnough);           
+                        }
                     } catch (FileNotFoundException e1) {
                         e1.printStackTrace();
                     }
-                } else {
+                } else if (input.equals("")){
                     messagewithdrawLabel.setText(fails);
                     withdrawAmount.setText("");
-
-                }
+                }    
             }
         });
         withdrawPanel.add(withdrawButton);
@@ -221,6 +232,7 @@ public class GUI extends bank implements ActionListener {
 
         JLabel messagedepositLabel = new JLabel("");
         messagedepositLabel.setBounds(100, 75, 300, 25);
+        messagedepositLabel.setHorizontalAlignment(JLabel.CENTER);
         depositPanel.add(messagedepositLabel);
 
         JButton depositButton = new JButton("deposit");
@@ -229,15 +241,21 @@ public class GUI extends bank implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 String successful = "Money has been added to your balance";
                 String fails = "Invalid input";
+                int maximumAmount = 10000;
+                String tooMuch = "maximum amount to deposit is $" + df.format(maximumAmount);
                 String input = depositAmount.getText();
                 if (isNumeric(input)) { // checks the input values.
-                    messagedepositLabel.setText(successful);
                     depositAmount.setText("");
                     // Add to balance function.
                     double dAmount = Double.parseDouble(input);
                     try {
-                        obj.setBalance(obj.deposit(dAmount));
-                        balanceLabel.setText("Your balance is: " + df.format(obj.getBalance()));
+                        if (dAmount <= maximumAmount) {
+                            messagedepositLabel.setText(successful);
+                            obj.setBalance(obj.deposit(dAmount));
+                            balanceLabel.setText("Your balance is: $" + df.format(obj.getBalance()));
+                        } else {
+                            messagedepositLabel.setText(tooMuch);
+                        }
                     } catch (FileNotFoundException e1) {
                         e1.printStackTrace();
                     }
@@ -297,6 +315,8 @@ public class GUI extends bank implements ActionListener {
         return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
       }
       public static void main(String[] args) throws Exception {
+        df.setGroupingUsed(true);
+        df.setGroupingSize(3);
         login();  // Start the entire code via main function.
     }
 

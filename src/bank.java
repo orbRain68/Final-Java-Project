@@ -18,7 +18,7 @@ public class bank {
     private Hashtable<String, String[]> my_dict; // Dictionary
 
     public Hashtable<String,String[]> IHaveNoIdea() throws FileNotFoundException {
-        File file = new File("src/BankUsers.txt");
+        File file = new File("C:/Users/me/Desktop/New JAVA/Final_Project/src/bankUsers.txt");
         Scanner userScanner = new Scanner(file);
         String[][] value = this.usernamePassword;
         my_dict = new Hashtable<String, String[]>();
@@ -37,7 +37,7 @@ public class bank {
         return my_dict;
     }
     public double[] balance() throws FileNotFoundException { // call each balance amount form each user and add it to an array.
-        File sourceFile = new File("src/BankUsers.txt");
+        File sourceFile = new File("C:/Users/me/Desktop/New JAVA/Final_Project/src/BankUsers.txt");
         Scanner scan = new Scanner(sourceFile);
         double[] balance = new double[3];
         int i = 0;
@@ -56,12 +56,7 @@ public class bank {
         return this.balance = this.balance + amount;
     }
     public double withdraw(double amount) { // Withdraw the entered amount.
-        if (amount > this.balance) {
-            System.out.println("You don't have that much ...");
-            return this.balance;
-        } else {
             return this.balance = this.balance - amount;
-        }
     }
     public String getAccountNumber() { //Getter for account number
         return this.acountNumber;
