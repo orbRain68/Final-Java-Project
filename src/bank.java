@@ -4,7 +4,7 @@
  * 28/04/2021
  */
 // Packages uesd.
-import java.util.Hashtable;
+import java.util.*;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,25 +12,28 @@ import java.io.FileNotFoundException;
  * @author [Abdulrazaq 4020018]
  */
 public class bank {
-    private String acountNumber ; // Use the accountnumber form the text file (BankUsers.txt) and set username and password.
+    private int acountNumber ; // Use the accountnumber form the text file (BankUsers.txt) and set username and password.
     private double balance;
-    private String [][]usernamePassword = {{"Hamood","CarLover202"},{"miky","catdude9"},{"A","A"}}; //store in an array.
-    private Hashtable<String, String[]> my_dict; // Dictionary
+    //private String [][]usernamePassword = {{"Hamood","CarLover202"},{"miky","catdude9"},{"A","A"}}; //store in an array.
+    private LinkedHashMap<Integer, String[]> my_dict; // Dictionary
 
-    public Hashtable<String,String[]> IHaveNoIdea() throws FileNotFoundException {
+    public LinkedHashMap<Integer,String[]> IHaveNoIdea() throws FileNotFoundException {
         File file = new File("C:/Users/me/Desktop/New JAVA/Final_Project/src/bankUsers.txt");
         Scanner userScanner = new Scanner(file);
-        String[][] value = this.usernamePassword;
-        my_dict = new Hashtable<String, String[]>();
+        my_dict = new LinkedHashMap<Integer, String[]>();
         int i = 0;
         while (userScanner.hasNextLine()) {
+            int key;
+            String[] value = new String [2];
             String reader = userScanner.nextLine();
+            key = Integer.parseInt(String.valueOf(reader.charAt(0)));
             int indxNum = reader.indexOf("number");
             int indx = reader.indexOf(".",indxNum);
-            String key = reader.substring(indxNum+8,indx);
-            String[] values = value[i]; // Storing each Username and password in an array
-            
-            my_dict.put(key, values); // With this line I can call the account number and get the username and password.
+            value[0] = reader.substring(indxNum+8,indx);
+            int bIndxNum = reader.lastIndexOf("$");
+            value[1] = reader.substring(bIndxNum+1);
+       
+            my_dict.put(key, value); // With this line I can call the account number and get the username and password.
             i++;
         }
         userScanner.close();
@@ -58,11 +61,11 @@ public class bank {
     public double withdraw(double amount) { // Withdraw the entered amount.
             return this.balance = this.balance - amount;
     }
-    public String getAccountNumber() { //Getter for account number
+    public int getAccountNumber() { //Getter for account number
         return this.acountNumber;
     }
     
-    public void setAccountNumber(String accounts) { //Setter for account number
+    public void setAccountNumber(int accounts) { //Setter for account number
         // get the information from the file ()
         this.acountNumber = accounts;
     }

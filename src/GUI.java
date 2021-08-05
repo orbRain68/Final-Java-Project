@@ -11,7 +11,13 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.TreeMap;
+import java.util.Map;
+import java.lang.*;
+import java.lang.reflect.Array;
+import java.io.*;
 import javax.swing.*;
 /**
  * @author [Abdulrazaq 4020018]
@@ -25,7 +31,7 @@ public class GUI extends bank implements ActionListener {
     private static JButton button;
     private static bank obj = new bank();
     private static DecimalFormat df = new DecimalFormat("###.##");
-
+    private static Login Lenter = new Login();
 
 
     public static void login() throws Exception { // first screen 
@@ -60,16 +66,23 @@ public class GUI extends bank implements ActionListener {
 
         String user = userTextField.getText();
         String password = passwordField.getText();
+        String[] input= {user,password};
         try { 
-            Hashtable<String, String[]> Table = obj.IHaveNoIdea();
-            Enumeration<String> keys = Table.keys(); // Calling the HashTable function form the class bank.
-            String [] accounts = new String[3];
+            LinkedHashMap<Integer, String[]> Table = obj.IHaveNoIdea();
+            //Enumeration<String> keys = Table.keys(); // Calling the HashTable function form the class bank.
+            Object [] accounts = new Object[3];
+            Object [][] vv = new Object[3][2];
             int i = 0;
-            while (keys.hasMoreElements()) {
-                accounts[i] = keys.nextElement();
+            for (Map.Entry m:Table.entrySet()) {
+                accounts[i] = m.getKey();
+                System.out.println(m.getKey());
                 i++;
             }
-            if (user.equals(Table.get(accounts[0])[0]) && password.equals(Table.get(accounts[0])[1])) {
+            String[] fff = Table.get(1);
+            System.out.println(fff[1]);
+            //System.out.println(input[1]);
+            //System.out.println(Lenter.Lenter(2)[1]);
+            /*if (user.equals(Table.get(accounts[0])[0]) && password.equals(Table.get(accounts[0])[1])) {
                 obj.setAccountNumber(accounts[0]) ;
                 System.out.println(obj.getAccountNumber());
                 obj.setBalance(obj.balance()[1]);
@@ -87,7 +100,7 @@ public class GUI extends bank implements ActionListener {
             } else {
                 messageLabel.setText("Incorrect Password.");
             }
-        } catch (FileNotFoundException e1) {
+        */} catch (FileNotFoundException e1) {
             
             System.out.println("check for missing file (BankUsers.txt)");
             e1.printStackTrace();
