@@ -27,9 +27,9 @@ public class bank {
             String[] value = new String [2];
             String reader = userScanner.nextLine();
             key = Integer.parseInt(String.valueOf(reader.charAt(0)));
-            int indxNum = reader.indexOf("number");
+            int indxNum = reader.indexOf(":",10);
             int indx = reader.indexOf(".",indxNum);
-            value[0] = reader.substring(indxNum+8,indx);
+            value[0] = reader.substring(indxNum+2,indx);
             int bIndxNum = reader.lastIndexOf("$");
             value[1] = reader.substring(bIndxNum+1);
        
@@ -38,22 +38,6 @@ public class bank {
         }
         userScanner.close();
         return my_dict;
-    }
-    public double[] balance() throws FileNotFoundException { // call each balance amount form each user and add it to an array.
-        File sourceFile = new File("C:/Users/me/Desktop/New JAVA/Final_Project/src/BankUsers.txt");
-        Scanner scan = new Scanner(sourceFile);
-        double[] balance = new double[3];
-        int i = 0;
-        while (scan.hasNextLine()) {
-            String reader = scan.nextLine();
-            int indxNum = reader.lastIndexOf("$");
-            double Money = Double.parseDouble(reader.substring(indxNum+1));
-            balance[i] = Money;
-            //System.out.println(Money);
-            i++;
-        }
-        scan.close();
-        return balance;
     }
     public double deposit(double amount) { // deposit the entered amount.
         return this.balance = this.balance + amount;
@@ -69,8 +53,8 @@ public class bank {
         // get the information from the file ()
         this.acountNumber = accounts;
     }
-    public void setBalance(double b) { // Setter for diffrent values. 
-        this.balance = b;
+    public void setBalance(double balance) { // Setter for diffrent values. 
+        this.balance = balance;
     }
     public double getBalance() throws FileNotFoundException { // Getter for current values.
         return this.balance;

@@ -41,7 +41,7 @@ public class GUI extends bank implements ActionListener {
         panel.setLayout(null);
         frame.add(panel);
         
-        userLabel = new JLabel("User Name: ");
+        userLabel = new JLabel("Username: ");
         userLabel.setBounds(10, 20, 80, 25);
         panel.add(userLabel);
         
@@ -69,42 +69,21 @@ public class GUI extends bank implements ActionListener {
         String[] input= {user,password};
         try { 
             LinkedHashMap<Integer, String[]> Table = obj.IHaveNoIdea();
-            //Enumeration<String> keys = Table.keys(); // Calling the HashTable function form the class bank.
-            Object [] accounts = new Object[3];
-            Object [][] vv = new Object[3][2];
-            int i = 0;
-            for (Map.Entry m:Table.entrySet()) {
-                accounts[i] = m.getKey();
-                System.out.println(m.getKey());
-                i++;
-            }
-            String[] fff = Table.get(1);
-            System.out.println(fff[1]);
-            //System.out.println(input[1]);
-            //System.out.println(Lenter.Lenter(2)[1]);
-            /*if (user.equals(Table.get(accounts[0])[0]) && password.equals(Table.get(accounts[0])[1])) {
-                obj.setAccountNumber(accounts[0]) ;
-                System.out.println(obj.getAccountNumber());
-                obj.setBalance(obj.balance()[1]);
-                secondGui();
-            } else if (user.equals(Table.get(accounts[1])[0]) && password.equals(Table.get(accounts[1])[1])) {
-                obj.setAccountNumber(accounts[1]) ;
-                obj.setBalance(obj.balance()[2]);
-                System.out.println(obj.getAccountNumber());
-                secondGui();
-            } else if (user.equals(Table.get(accounts[2])[0]) && password.equals(Table.get(accounts[2])[1])) {
-                obj.setAccountNumber(accounts[2]);
-                obj.setBalance(obj.balance()[0]);
-                System.out.println(obj.getAccountNumber());
-                secondGui();
-            } else {
-                messageLabel.setText("Incorrect Password.");
-            }
-        */} catch (FileNotFoundException e1) {
+
+            System.out.println(Lenter.Lenter(input[0],input[1]));
+            String[] fff = Table.get(Lenter.Lenter(input[0],input[1]));
+            int accountNum = Integer.parseInt(fff[0]);
+            Double accountBalac = Double.parseDouble(fff[1]);
+            obj.setAccountNumber(accountNum);
+            obj.setBalance(accountBalac);
+            secondGui();
+            } catch (FileNotFoundException e1) {
             
             System.out.println("check for missing file (BankUsers.txt)");
             e1.printStackTrace();
-        }    
+        } catch (NullPointerException e2) {
+            messageLabel.setText("Incorrect UserName");;
+        }   
     }
         });
         panel.add(button);
@@ -201,7 +180,7 @@ public class GUI extends bank implements ActionListener {
         withdrawButton.setBounds(50, 125, 130, 20);
         withdrawButton.addActionListener(new GUI() {
             public void actionPerformed(ActionEvent e) { // When the withdraw button is press this function will run.
-                String successful = "Please to the withdrew amount ";
+                String successful = "Please take the amount ";
                 String fails = "Invalid input";
                 String notEnough = "You don't have that much to withdraw ";
                 int maximumAmount = 5000;
