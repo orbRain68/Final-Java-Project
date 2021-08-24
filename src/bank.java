@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileWriter;
 /**
  * @author [Abdulrazaq 4020018]
  */
@@ -38,6 +40,28 @@ public class bank {
         }
         userScanner.close();
         return my_dict;
+    }
+    public void saveAll(int position,String cash) {
+        try {
+            File fileRead = new File("C:/Users/me/Desktop/New JAVA/Final_Project/src/bankUsers.txt");
+            String addIn = "";
+            Scanner scan = new Scanner(fileRead);
+            while (scan.hasNextLine()) {
+                String reader = scan.nextLine();
+                if (String.valueOf(reader.charAt(0)).equals(position+"")) {
+                    int loc = reader.lastIndexOf("$");
+                    reader = reader.substring(0,loc+1)+""+cash;
+                }
+                addIn = addIn.concat(reader+"\n");
+            }
+            scan.close();
+            FileWriter myWriter = new FileWriter("C:/Users/me/Desktop/New JAVA/Final_Project/src/bankUsers.txt");
+            myWriter.write(addIn);
+            myWriter.close();
+
+        } catch (IOException e) {
+            //TODO: handle exception
+        }
     }
     public double deposit(double amount) { // deposit the entered amount.
         return this.balance = this.balance + amount;

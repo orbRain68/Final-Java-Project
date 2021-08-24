@@ -6,18 +6,12 @@
 // Packages uesd.
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.TreeMap;
-import java.util.Map;
-import java.lang.*;
-import java.lang.reflect.Array;
-import java.io.*;
 import javax.swing.*;
 /**
  * @author [Abdulrazaq 4020018]
@@ -32,6 +26,7 @@ public class GUI extends bank implements ActionListener {
     private static bank obj = new bank();
     private static DecimalFormat df = new DecimalFormat("###.##");
     private static Login Lenter = new Login();
+    private static int position;
 
 
     public static void login() throws Exception { // first screen 
@@ -70,8 +65,8 @@ public class GUI extends bank implements ActionListener {
         try { 
             LinkedHashMap<Integer, String[]> Table = obj.IHaveNoIdea();
 
-            System.out.println(Lenter.Lenter(input[0],input[1]));
-            String[] fff = Table.get(Lenter.Lenter(input[0],input[1]));
+            position = Lenter.Lenter(input[0],input[1]);
+            String[] fff = Table.get(position);
             int accountNum = Integer.parseInt(fff[0]);
             Double accountBalac = Double.parseDouble(fff[1]);
             obj.setAccountNumber(accountNum);
@@ -99,9 +94,11 @@ public class GUI extends bank implements ActionListener {
         JFrame frame1 = createFrame2();
         JPanel buttonPanel = new JPanel(); // Create button panel at the top of the second screen.
         JLayeredPane layeredPane = new JLayeredPane();
-        JPanel homePanel = homPanel();
+        JTextArea textArea = new JTextArea();
+        JPanel homePanel = homePanel();
         JPanel withdrawPanel = withdrawPanel();
         JPanel depositPanel = depositPanel();
+        JPanel historyPanel = historyPanel();
 
 
         buttonPanel.setBounds(0, 0, 632, 70);
@@ -126,7 +123,7 @@ public class GUI extends bank implements ActionListener {
             }
         });
         buttonPanel.add(withdrawSwitchButton);
-        JButton depositSwitchButton = new JButton("deposit"); //Butten 3
+        JButton depositSwitchButton = new JButton("Deposit"); //Butten 3
         buttonPanel.add(depositSwitchButton);
         depositSwitchButton.addActionListener(new GUI() {
             public void actionPerformed(ActionEvent e) { // switch between panel when prssed
@@ -136,6 +133,17 @@ public class GUI extends bank implements ActionListener {
                 layeredPane.revalidate();
             }
         });
+        JButton historyButton = new JButton("History"); //Button 4
+        historyButton.addActionListener(new GUI() {
+            public void actionPerformed(ActionEvent e) {
+                layeredPane.removeAll();
+                layeredPane.add(historyPanel);
+                layeredPane.repaint();
+                layeredPane.revalidate();
+            }
+        });
+        buttonPanel.add(historyButton);
+
         frame1.add(buttonPanel);
         
         layeredPane.setBounds(2,70,630,290); // place.
@@ -191,11 +199,13 @@ public class GUI extends bank implements ActionListener {
                     // Add to balance function.
                     double wAmount = Double.parseDouble(input);
                     try {
-                        if (obj.getBalance() > wAmount) {
+                        if (obj.getBalance() >= wAmount) {
                             if (maximumAmount >= wAmount) {
                                 messagewithdrawLabel.setText(successful);
                                 obj.setBalance(obj.withdraw(wAmount));
                                 balanceLabel.setText("Your balance is: $" + df.format(obj.getBalance()));
+                                obj.saveAll(position,String.format("%.2f",obj.getBalance()));
+                                textArea.setText(Lenter.rInHistory(wAmount, withdrawButton.getText()));
                             } else {
                                 messagewithdrawLabel.setText(tooMuch);
                             }        
@@ -227,7 +237,7 @@ public class GUI extends bank implements ActionListener {
         messagedepositLabel.setHorizontalAlignment(JLabel.CENTER);
         depositPanel.add(messagedepositLabel);
 
-        JButton depositButton = new JButton("deposit");
+        JButton depositButton = new JButton("Deposit");
         depositButton.setBounds(50, 125, 130, 20);
         depositButton.addActionListener(new GUI() { // when the deposit button is press this function will run.
             public void actionPerformed(ActionEvent e) {
@@ -245,6 +255,8 @@ public class GUI extends bank implements ActionListener {
                             messagedepositLabel.setText(successful);
                             obj.setBalance(obj.deposit(dAmount));
                             balanceLabel.setText("Your balance is: $" + df.format(obj.getBalance()));
+                            obj.saveAll(position,String.format("%.2f",obj.getBalance()));
+                            textArea.setText(Lenter.rInHistory(dAmount, depositButton.getText()));
                         } else {
                             messagedepositLabel.setText(tooMuch);
                         }
@@ -259,6 +271,18 @@ public class GUI extends bank implements ActionListener {
             }
         });
         depositPanel.add(depositButton);
+
+        // Place in History content.
+        textArea.setBorder(BorderFactory.createEtchedBorder(1));
+        textArea.setFont(new Font("Comic Snas", Font.BOLD, 15));
+        textArea.setBackground(Color.LIGHT_GRAY);
+        
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setBounds(0, 0, 500, 200);
+        scrollPane.setPreferredSize(new Dimension(500, 200));
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        historyPanel.add(scrollPane);
 
         frame1.add(layeredPane);
         frame1.setVisible(true);
@@ -278,13 +302,20 @@ public class GUI extends bank implements ActionListener {
         withdrawPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
         return withdrawPanel;
     }
+    private static JPanel historyPanel() {
+        JPanel historyPanel = new JPanel();
+        historyPanel.setBounds(65,45,500,200);
+        historyPanel.setLayout(null);
+        historyPanel.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
+		return historyPanel;
+    }
 
     private static JFrame createFrame2() { // bank frame (second frame)
         JFrame frame = new JFrame("Account");
         frame.setSize(new Dimension(650,400));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
-        frame.setResizable(true);
+        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         return frame;
     }
@@ -296,7 +327,7 @@ public class GUI extends bank implements ActionListener {
         frame.setLocationRelativeTo(null);
         return frame;
     }
-    private static JPanel homPanel() {
+    private static JPanel homePanel() {
         JPanel homePanel = new JPanel();
         homePanel.setBounds(65, 45, 500, 200);
         homePanel.setLayout(null);
